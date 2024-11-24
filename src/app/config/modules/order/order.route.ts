@@ -6,7 +6,7 @@ const orderRouter = Router();
 
 // Place an order
 orderRouter.post(
-  '/',
+  '/order',
   validateRequest(createOrderSchema), // Validate request body
   orderController.createOrder
 );
