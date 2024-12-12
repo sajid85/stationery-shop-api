@@ -16,28 +16,22 @@ exports.orderService = void 0;
 const order_model_1 = require("./order.model");
 const product_model_1 = __importDefault(require("../products/product.model"));
 exports.orderService = {
-    // Create a new order
     createOrder: (orderData) => __awaiter(void 0, void 0, void 0, function* () {
         const { email, product, quantity } = orderData;
-        // Fetch the product details
         const productDetails = yield product_model_1.default.findById(product);
         if (!productDetails) {
             throw new Error('Product not found');
         }
-        // Check if enough stock is available
         if (productDetails.quantity < quantity) {
             throw new Error('Insufficient stock available');
         }
-        // Calculate the total price
         const totalPrice = productDetails.price * quantity;
-        // Create the order
         const order = yield order_model_1.Order.create({
             email,
             product,
             quantity,
             totalPrice,
         });
-        // Update product stock
         productDetails.quantity -= quantity;
         if (productDetails.quantity === 0) {
             productDetails.inStock = false;
@@ -45,17 +39,19 @@ exports.orderService = {
         yield productDetails.save();
         return order;
     }),
-    // Calculate total revenue from all orders
+    getAllOrders: () => __awaiter(void 0, void 0, void 0, function* () {
+        return yield order_model_1.Order.find().populate('product');
+    }),
     calculateRevenue: () => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
         const result = yield order_model_1.Order.aggregate([
             {
                 $group: {
                     _id: null,
-                    totalRevenue: { $sum: '$totalPrice' }, // Sum the `totalPrice` field
+                    totalRevenue: { $sum: '$totalPrice' },
                 },
             },
         ]);
-        return ((_a = result[0]) === null || _a === void 0 ? void 0 : _a.totalRevenue) || 0; // Return totalRevenue or 0 if no orders
+        return ((_a = result[0]) === null || _a === void 0 ? void 0 : _a.totalRevenue) || 0;
     }),
 };

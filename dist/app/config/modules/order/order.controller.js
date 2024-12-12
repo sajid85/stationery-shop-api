@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.orderController = void 0;
 const order_service_1 = require("./order.service");
 exports.orderController = {
-    // Create a new order
     createOrder: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const order = yield order_service_1.orderService.createOrder(req.body);
@@ -24,13 +23,29 @@ exports.orderController = {
         }
         catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
-            res.status(400).send({
+            res.status(500).send({
                 message: errorMessage,
                 status: false,
             });
         }
     }),
-    // Calculate revenue
+    getAllOrders: (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const orders = yield order_service_1.orderService.getAllOrders();
+            res.status(200).send({
+                message: 'Orders retrieved successfully',
+                status: true,
+                data: orders,
+            });
+        }
+        catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+            res.status(500).send({
+                message: errorMessage,
+                status: false,
+            });
+        }
+    }),
     calculateRevenue: (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const totalRevenue = yield order_service_1.orderService.calculateRevenue();

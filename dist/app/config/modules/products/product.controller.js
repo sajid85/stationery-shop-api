@@ -26,9 +26,7 @@ const product_service_1 = require("./product.service");
 const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log('Create Product Request Body:', req.body);
-        // Sanitize the payload by excluding _id
         const _a = req.body, { _id } = _a, body = __rest(_a, ["_id"]);
-        // Pass sanitized payload to the service
         const result = yield product_service_1.productService.createProduct(body);
         res.status(201).send({
             success: true,
@@ -37,7 +35,7 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     catch (error) {
-        console.error('Error creating product:', error); // Log the error
+        console.error('Error creating product:', error);
         res.status(500).send({
             success: false,
             message: 'Failed to create product',
@@ -49,7 +47,6 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const searchTerm = req.query.searchTerm;
-        // Fetch products using the service
         const result = yield product_service_1.productService.getProducts(searchTerm);
         res.status(200).send({
             success: true,
@@ -58,7 +55,7 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
     }
     catch (error) {
-        console.error('Error fetching products:', error); // Log the error
+        console.error('Error fetching products:', error);
         res.status(500).send({
             success: false,
             message: 'Failed to fetch products',
@@ -70,7 +67,6 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 const getSingleProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.productId;
-        // Fetch product by ID using the service
         const result = yield product_service_1.productService.getSingleProduct(id);
         res.status(200).send({
             success: true,
@@ -79,7 +75,7 @@ const getSingleProduct = (req, res) => __awaiter(void 0, void 0, void 0, functio
         });
     }
     catch (error) {
-        console.error('Error fetching product:', error); // Log the error
+        console.error('Error fetching product:', error);
         res.status(500).send({
             success: false,
             message: 'Failed to fetch product',
@@ -91,18 +87,25 @@ const getSingleProduct = (req, res) => __awaiter(void 0, void 0, void 0, functio
 const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.productId;
-        // Sanitize the payload by excluding _id
         const _a = req.body, { _id } = _a, body = __rest(_a, ["_id"]);
-        // Update product using the service
+        // Update and return the updated product
         const result = yield product_service_1.productService.updateProduct(id, body);
+        if (!result) {
+            return res.status(404).send({
+                success: false,
+                message: 'Product not found',
+            });
+        }
+        // Fetch the updated product data to ensure it's returned
+        const updatedProduct = yield product_service_1.productService.getSingleProduct(id);
         res.status(200).send({
             success: true,
             message: 'Product updated successfully',
-            result,
+            result: updatedProduct,
         });
     }
     catch (error) {
-        console.error('Error updating product:', error); // Log the error
+        console.error('Error updating product:', error);
         res.status(500).send({
             success: false,
             message: 'Failed to update product',
@@ -114,8 +117,13 @@ const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.productId;
-        // Delete product using the service
         const result = yield product_service_1.productService.deleteProduct(id);
+        if (!result) {
+            return res.status(404).send({
+                success: false,
+                message: 'Product not found',
+            });
+        }
         res.status(200).send({
             success: true,
             message: 'Product deleted successfully',
@@ -123,7 +131,7 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     catch (error) {
-        console.error('Error deleting product:', error); // Log the error
+        console.error('Error deleting product:', error);
         res.status(500).send({
             success: false,
             message: 'Failed to delete product',
