@@ -10,8 +10,8 @@ app.use(express.json());
 app.use(cors());
 
 // Application Routes
-app.use('/api/v1/products', productRouter); 
-app.use('/api/v1/orders', orderRouter); 
+app.use('/api/products', productRouter); 
+app.use('/api/orders', orderRouter); 
 
 // Root Route
 app.get('/', (req: Request, res: Response) => {

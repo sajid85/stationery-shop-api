@@ -1,10 +1,8 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { IOrder } from './order.interface';
 
-// Extend the IOrder interface with Mongoose's Document type
 export interface OrderDocument extends IOrder, Document {}
 
-// Define the schema for the Order model
 const OrderSchema = new Schema<OrderDocument>(
   {
     email: {

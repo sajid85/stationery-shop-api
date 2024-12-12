@@ -4,14 +4,20 @@ import { validateRequest, createOrderSchema } from './order.validation';
 
 const orderRouter = Router();
 
-// Place an order
 orderRouter.post(
-  '/order',
-  validateRequest(createOrderSchema), // Validate request body
+  '/',
+  validateRequest(createOrderSchema), // Middleware to validate the request body
   orderController.createOrder
 );
 
-// Calculate revenue
-orderRouter.get('/revenue', orderController.calculateRevenue);
+orderRouter.get(
+  '/',
+  orderController.getAllOrders
+);
+
+orderRouter.get(
+  '/revenue',
+  orderController.calculateRevenue
+);
 
 export default orderRouter;
